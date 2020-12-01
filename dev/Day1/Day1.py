@@ -35,4 +35,4 @@ def read_input_and_solve(group_length: int) -> int:
 
 
 if __name__ == "__main__":
-    print(read_input_and_solve(2))
+    print(read_input_and_solve(3))
