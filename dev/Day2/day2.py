@@ -2,7 +2,7 @@
 import os
 
 
-def parse_rules_and_pswds(rules_and_pswd: str):
+def parse_rules_and_pswds(rules_and_pswd: list):
     rules = []
     pswds = []
     for rule_and_pswds in rules_and_pswd:
@@ -30,27 +30,17 @@ def count_valid_passwords(rules: dict, pswds: list):
             valid_passwords = valid_passwords + 1
     return valid_passwords
 
+def only_one_condition(*args):
+    return sum(args) == 1
 
 def is_valid_password(rules: dict, psw: str) -> bool:
-
-    count_letters = {}
-    for s in psw:
-        if s not in count_letters:
-            count_letters[s] = 1
-        else:
-            count_letters[s] = count_letters[s] + 1
-
     for k, v in rules.items():
-        if k not in count_letters:
-            return False
-        else:
-            times = count_letters[k]
-            minimum = v[0]
-            maximum = v[1]
-            if times < minimum or maximum < times:
-                return False
-
-    return True
+        index_1 = v[0]
+        index_2 = v[1]
+    
+        if only_one_condition( psw[index_1 - 1] == k, psw[index_2 - 1] == k):
+            return True
+    return False
 
 
 if __name__ == "__main__":
