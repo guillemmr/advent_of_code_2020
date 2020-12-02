@@ -30,15 +30,17 @@ def count_valid_passwords(rules: dict, pswds: list):
             valid_passwords = valid_passwords + 1
     return valid_passwords
 
+
 def only_one_condition(*args):
     return sum(args) == 1
+
 
 def is_valid_password(rules: dict, psw: str) -> bool:
     for k, v in rules.items():
         index_1 = v[0]
         index_2 = v[1]
-    
-        if only_one_condition( psw[index_1 - 1] == k, psw[index_2 - 1] == k):
+
+        if only_one_condition(psw[index_1 - 1] == k, psw[index_2 - 1] == k):
             return True
     return False
 
