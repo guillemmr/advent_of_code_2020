@@ -7,4 +7,4 @@ def test_example():
 2-9 c: ccccccccc""".splitlines()
 
     rules, pswds = day2.parse_rules_and_pswds(raw_pswd)
-    assert 2 == day2.count_valid_passwords(rules, pswds)
+    assert 1 == day2.count_valid_passwords(rules, pswds)
