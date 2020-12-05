@@ -1,4 +1,3 @@
-from __future__ import annotations
 import os
 
 
@@ -78,7 +77,7 @@ def is_valid_passport(passport: map) -> bool:
     return False
 
 
-def count_valid_passports(passports: list[map]) -> int:
+def count_valid_passports(passports: list) -> int:
     valid_passports = 0
     for passport in passports:
         if is_valid_passport(passport):
@@ -87,7 +86,7 @@ def count_valid_passports(passports: list[map]) -> int:
     return valid_passports
 
 
-def read_passports(raw_passports: str) -> list[map]:
+def read_passports(raw_passports: str) -> list:
     passports = []  # <- list of maps
     raw_passports = raw_passports.split("\n\n")
     raw_passports = [passport.replace("\n", " ") for passport in raw_passports]
