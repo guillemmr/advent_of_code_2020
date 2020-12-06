@@ -1,4 +1,5 @@
 import os
+from typing import Callable
 
 
 def read_answers_by_group(raw_answers: str) -> list:
@@ -17,10 +18,12 @@ def read_answers_by_group(raw_answers: str) -> list:
     return answers
 
 
-def sum_common_answers_by_group(answers: list) -> int:
+def sum_answers_by_group(answers: list, foo: Callable) -> int:
+
     sum_ret = 0
     for group_answers in answers:
-        common_answers = len(set.union(*group_answers))
+
+        common_answers = len(foo(*group_answers))
         sum_ret = sum_ret + common_answers
     return sum_ret
 
@@ -31,4 +34,5 @@ if __name__ == "__main__":
         raw_answers = file.read()
 
     answers = read_answers_by_group(raw_answers)
-    print(sum_common_answers_by_group(answers))
+    print(sum_answers_by_group(answers, set.union))
+    print(sum_answers_by_group(answers, set.intersection))
