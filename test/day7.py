@@ -14,3 +14,19 @@ dotted black bags contain no other bags."""
     graph = day7.create_graph(raw_bag)
     predecessors = day7.get_all_predecessors("shiny gold", graph)
     assert 4 == (len(set(predecessors)))
+
+
+def test_example2():
+    raw_bag = """shiny gold bags contain 2 dark red bags.
+dark red bags contain 2 dark orange bags.
+dark orange bags contain 2 dark yellow bags.
+dark yellow bags contain 2 dark green bags.
+dark green bags contain 2 dark blue bags.
+dark blue bags contain 2 dark violet bags.
+dark violet bags contain no other bags.
+"""
+    graph = day7.create_graph(raw_bag)
+    predecessors = day7.get_all_predecessors("shiny gold", graph)
+    assert 0 == (len(set(predecessors)))
+    successors = day7.get_all_successors("shiny gold", graph)
+    assert 126 == len(successors)

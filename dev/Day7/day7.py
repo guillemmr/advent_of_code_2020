@@ -28,11 +28,23 @@ def create_graph(raw_bag: str) -> nx.MultiDiGraph:
 
 def get_all_predecessors(bag: str, graph: nx.MultiDiGraph) -> set:
     parent_bags = []
-    for contain_bag in graph.predecessors(bag):
-        parent_bags.append(contain_bag)
-        parent_bags += (get_all_predecessors(contain_bag, graph))
+    for parent_bag in graph.predecessors(bag):
+        parent_bags.append(parent_bag)
+        parent_bags += (get_all_predecessors(parent_bag, graph))
 
     return parent_bags
+
+
+def get_all_successors(bag: str, graph: nx.MultiDiGraph) -> set:
+    child_bags = []
+    for child_bag in graph.successors(bag):
+        succ = get_all_successors(child_bag, graph)
+
+        for i in range(graph.number_of_edges(bag, child_bag)):
+            child_bags.append(child_bag)
+            child_bags += succ
+
+    return child_bags
 
 
 if __name__ == "__main__":
@@ -41,5 +53,5 @@ if __name__ == "__main__":
         raw_bag = file.read()
 
     graph = create_graph(raw_bag)
-    predecessors = get_all_predecessors("shiny gold", graph)
-    print(len(set(predecessors)))
+    predecessors = get_all_successors("shiny gold", graph)
+    print(len(predecessors))
