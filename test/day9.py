@@ -24,3 +24,6 @@ def test_part1():
 576"""
     xmas_code = [int(x) for x in xmas_code.splitlines()]
     assert 127 == day9.find_first_xmas_weakness(xmas_code, preamble=5)
+
+    candidates = day9.find_consecutive_sum(127, xmas_code)
+    assert 62 == min(candidates)+max(candidates)

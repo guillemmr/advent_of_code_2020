@@ -21,9 +21,28 @@ def find_first_xmas_weakness(xmas_code: list, preamble: int):
             return num
 
 
+def find_consecutive_sum(total: int, candidates: list):
+    min_idx = 0
+    max_idx = 0
+    partial_sum = 0
+
+    while partial_sum != total:
+
+        if partial_sum < total:
+            max_idx = max_idx + 1
+        elif partial_sum > total:
+            min_idx = min_idx + 1
+
+        partial_sum = sum(candidates[min_idx: max_idx])
+
+    return candidates[min_idx: max_idx]
+
+
 if __name__ == "__main__":
     with open(os.path.join(os.path.dirname(__file__), "input.txt")) as file:
         xmas_code = file.read()
 
     xmas_code = [int(x) for x in xmas_code.splitlines()]
-    print(find_first_xmas_weakness(xmas_code, 25))
+    xmas_weakness = find_first_xmas_weakness(xmas_code, 25)
+    candidates = find_consecutive_sum(xmas_weakness, xmas_code)
+    print(min(candidates)+max(candidates))
