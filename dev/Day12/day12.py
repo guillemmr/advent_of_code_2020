@@ -1,97 +1,85 @@
 import os
-
-def turn_ship_clockwise(actual_dir, degrees) -> str:
-    if degrees == 90 or degrees == -270:
-        if actual_dir == "E": return "S"
-        if actual_dir == "S": return "W"
-        if actual_dir == "W": return "N"
-        if actual_dir == "N": return "E"
-    if degrees == 180 or degrees == -180:
-        if actual_dir == "E": return "W"
-        if actual_dir == "S": return "N"
-        if actual_dir == "W": return "E"
-        if actual_dir == "N": return "S"
-    if degrees == 270 or degrees == -90:
-        if actual_dir == "E": return "N"
-        if actual_dir == "S": return "E"
-        if actual_dir == "W": return "S"
-        if actual_dir == "N": return "W"
-    raise Exception("ups")
+import functools
+import cmath
 
 
-def do_move_ship(ship, actual_dir, type_mov: str, units_mov: int) -> set:
+class Ship:
+    def __init__(self):
+        self.position = complex(0)
+        self.direction = complex(1)
+        self.waypoint = complex(10, 1)
+
+    def move_in_dir(self, n: int):
+        self.position += n * self.direction
+
+    def add(self, a):
+        self.position += a
+
+    def turn(self, degrees: int):
+        """clockwise"""
+        a = self.direction
+        a *= cmath.exp(-(complex(0, 1)*cmath.pi/180)*degrees)
+        self.direction = complex(round(a.real), round(a.imag))
+
+    def move_in_dir_w(self, n: int):
+        self.position += n * self.waypoint
+
+    def add_w(self, a):
+        self.waypoint += a
+
+    def turn_w(self, degrees: int):
+        a = self.waypoint
+        a *= cmath.exp(-degrees*cmath.pi/180*complex(0, 1))
+        self.waypoint = complex(round(a.real), round(a.imag))
+
+    def move(self, movements: list):
+        for mov in movements:
+            mov(self)
+
+    def taxi_distance(self):
+        return abs(self.position.real) + abs(self.position.imag)
+
+
+def input_to_movement(str, waypoint):
+    type_mov = str[0]
+    units_mov = int(str[1:])
+
+    foo_add = Ship.add_w if waypoint is True else Ship.add
+    foo_turn = Ship.turn_w if waypoint is True else Ship.turn
+    foo_move = Ship.move_in_dir_w if waypoint is True else Ship.move_in_dir
+
     if type_mov == "N":
-        ship["y"] += units_mov
+        return functools.partial(foo_add, a=complex(0, units_mov))
     if type_mov == "S":
-        ship["y"] -= units_mov
+        return functools.partial(foo_add, a=complex(0, -units_mov))
     if type_mov == "E":
-        ship["x"] += units_mov
+        return functools.partial(foo_add, a=complex(units_mov, 0))
     if type_mov == "W":
-        ship["x"] -= units_mov
+        return functools.partial(foo_add, a=complex(-units_mov, 0))
     if type_mov == "L":
-        actual_dir = turn_ship_clockwise(actual_dir, -units_mov)
+        degrees = units_mov
+        return functools.partial(foo_turn, degrees=-degrees)
     if type_mov == "R":
-        actual_dir = turn_ship_clockwise(actual_dir, units_mov)
+        degrees = units_mov
+        return functools.partial(foo_turn, degrees=degrees)
     if type_mov == "F":
-        ship, actual_dir = do_move_ship(ship, actual_dir, actual_dir, units_mov)
-
-    return (ship, actual_dir)
-
-
-def turn_clockwise_waypoint(position_waypoint, units_mov):
-    if units_mov == 90 or units_mov == -270:
-        tmp = position_waypoint["y"]
-        position_waypoint["y"] = -position_waypoint["x"]
-        position_waypoint["x"] = tmp
-    if units_mov == 180 or units_mov == -180:
-        position_waypoint["y"] = -position_waypoint["y"]
-        position_waypoint["x"] = -position_waypoint["x"]
-    if units_mov == 270 or units_mov == -90:
-        tmp = position_waypoint["y"]
-        position_waypoint["y"] = position_waypoint["x"]
-        position_waypoint["x"] = -tmp
-    return position_waypoint
-
-
-def do_move_waypoint(ship, waypoint, type_mov: str, units_mov: int) -> set:
-    if type_mov == "N":
-        waypoint["y"] += units_mov
-    if type_mov == "S":
-        waypoint["y"] -= units_mov
-    if type_mov == "E":
-        waypoint["x"] += units_mov
-    if type_mov == "W":
-        waypoint["x"] -= units_mov
-    
-    if type_mov == "L":
-        waypoint = turn_clockwise_waypoint(waypoint, -units_mov)
-    if type_mov == "R":
-        waypoint = turn_clockwise_waypoint(waypoint, units_mov)
-    if type_mov == "F":
-        ship["x"] = ship["x"] + units_mov * waypoint["x"]
-        ship["y"] = ship["y"] + units_mov * waypoint["y"]
-
-    return (ship, waypoint)
-
-
+        return functools.partial(foo_move, n=units_mov)
 
 
 if __name__ == "__main__":
     with open(os.path.join(os.path.dirname(__file__), "input.txt")) as file:
         movements = file.read()
 
-    movements = movements.splitlines()
-    ship = {"x":0, "y":0}
-    waypoint = {"x":10, "y":1}
-#    actual_dir = "E"
+    raw_movs = movements.splitlines()
+    use_waypoint = False
 
-    for mov in movements:
-        type_mov = mov[0]
-        units_mov = int (mov[1:])
-# position, actual_dir = do_move_ship(position, actual_dir,type_mov, units_mov)
-        ship, waypoint = do_move_waypoint(ship, waypoint, type_mov, units_mov)
-        
-    print(ship)
-    print(abs(ship["x"])+abs(ship["y"]))
+    movements = [input_to_movement(mov, use_waypoint) for mov in raw_movs]
+    ship = Ship()
+    ship.move(movements)
+    print(ship.taxi_distance())
 
-    
+    use_waypoint = True
+    movements = [input_to_movement(mov, use_waypoint) for mov in raw_movs]
+    ship = Ship()
+    ship.move(movements)
+    print(ship.taxi_distance())
