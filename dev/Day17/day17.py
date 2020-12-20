@@ -8,7 +8,7 @@ class ConwayGame_N_dim(ABC):
     """
         Basics of N dimensional Conway Game of Life
     """
-    active_cells: set
+    # active_cells: set
 
     @abstractmethod
     def _get_cells_to_check(self) -> Iterator:
@@ -47,9 +47,9 @@ class ConwayGame_N_dim(ABC):
 
 class ConwayGame3d(ConwayGame_N_dim):
 
-    x_range: list
-    y_range: list
-    z_range: list
+    # x_range: list
+    # y_range: list
+    # z_range: list
 
     def __init__(self, initial_config: str):
         rows = initial_config.splitlines()
