@@ -86,10 +86,10 @@ class ConwayGame3d(ConwayGame_N_dim):
 
 class ConwayGame4d(ConwayGame_N_dim):
 
-    x_range: list
-    y_range: list
-    z_range: list
-    w_range: list
+    # x_range: list
+    # y_range: list
+    # z_range: list
+    # w_range: list
 
     def __init__(self, initial_config: str):
         rows = initial_config.splitlines()
